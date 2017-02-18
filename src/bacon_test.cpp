@@ -28,6 +28,8 @@
   SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+#include <plugins.h>
+
 #ifdef QT_QML_DEBUG
 #include <QtQuick>
 #endif
@@ -37,6 +39,8 @@
 
 int main(int argc, char *argv[])
 {
+    Plugins plugins;
+    plugins.registerTypes("Bacon2D");
     // SailfishApp::main() will display "qml/template.qml", if you need more
     // control over initialization, you can use:
     //

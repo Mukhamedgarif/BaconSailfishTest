@@ -30,44 +30,48 @@
 
 import QtQuick 2.0
 import Sailfish.Silica 1.0
+import Bacon2D 1.0
 
 
 Page {
     id: page
 
-    // The effective value will be restricted by ApplicationWindow.allowedOrientations
-    allowedOrientations: Orientation.All
+    Game {
+        id: game
+        width: parent.width
+        height: parent.height
+        currentScene: scene
 
-    // To enable PullDownMenu, place our content in a SilicaFlickable
-    SilicaFlickable {
-        anchors.fill: parent
-
-        // PullDownMenu and PushUpMenu must be declared in SilicaFlickable, SilicaListView or SilicaGridView
-        PullDownMenu {
-            MenuItem {
-                text: qsTr("Show Page 2")
-                onClicked: pageStack.push(Qt.resolvedUrl("SecondPage.qml"))
-            }
+        Settings {
+            id: settings
+            property int highScore: 0
+            property bool noSound: false
         }
 
-        // Tell SilicaFlickable the height of its content.
-        contentHeight: column.height
+        Scene {
+            id: scene
+            physics: true
+            width: parent.width
+            height: parent.height
 
-        // Place our content in a Column.  The PageHeader is always placed at the top
-        // of the page, followed by our content.
-        Column {
-            id: column
+            Entity {
+                id: entity
+                width: parent.width
+                height: parent.height
+                updateInterval: 50
+                behavior: ScriptBehavior {
+                    script: {
+                        var newPos = entity.x + 5
+                        entity.x = newPos > parent.width ? 0 : newPos
+                        console.log("update: x -> ", entity.x)
+                    }
+                }
 
-            width: page.width
-            spacing: Theme.paddingLarge
-            PageHeader {
-                title: qsTr("UI Template")
-            }
-            Label {
-                x: Theme.horizontalPageMargin
-                text: qsTr("Hello Sailors")
-                color: Theme.secondaryHighlightColor
-                font.pixelSize: Theme.fontSizeExtraLarge
+                Rectangle {
+                    width: 50
+                    height: 50
+                    color: "red"
+                }
             }
         }
     }

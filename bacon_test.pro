@@ -10,6 +10,8 @@
 #   - translation filenames have to be changed
 
 # The name of your application
+include(./Bacon2D/src/Bacon2D-static.pri)
+
 TARGET = bacon_test
 
 CONFIG += sailfishapp

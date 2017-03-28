@@ -26,7 +26,8 @@ OTHER_FILES += qml/bacon_test.qml \
     rpm/bacon_test.spec \
     rpm/bacon_test.yaml \
     translations/*.ts \
-    bacon_test.desktop
+    bacon_test.desktop \
+    qml/pages/components/*.qml
 
 SAILFISHAPP_ICONS = 86x86 108x108 128x128 256x256
 
@@ -39,3 +40,8 @@ CONFIG += sailfishapp_i18n
 # following TRANSLATIONS line. And also do not forget to
 # modify the localized app name in the the .desktop file.
 TRANSLATIONS += translations/bacon_test-de.ts
+
+DISTFILES += \
+    qml/pages/components/Ball.qml \
+    qml/pages/components/PBody_test.qml \
+    qml/pages/components/Bowl.qml

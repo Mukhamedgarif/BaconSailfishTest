@@ -31,46 +31,88 @@
 import QtQuick 2.0
 import Sailfish.Silica 1.0
 import Bacon2D 1.0
-
+import "components"
 
 Page {
-    id: page
-
     Game {
         id: game
-        width: parent.width
-        height: parent.height
-        currentScene: scene
+        anchors.centerIn: parent
 
-        Settings {
-            id: settings
-            property int highScore: 0
-            property bool noSound: false
-        }
+        height: 680
+        width: 440
+
+        gameName: "test"
+
+        currentScene: gameScene
 
         Scene {
-            id: scene
+            id: gameScene
             physics: true
-            width: parent.width
-            height: parent.height
+            //running: true
 
-            Entity {
-                id: entity
-                width: parent.width
-                height: parent.height
-                updateInterval: 50
-                behavior: ScriptBehavior {
-                    script: {
-                        var newPos = entity.x + 5
-                        entity.x = newPos > parent.width ? 0 : newPos
-                        console.log("update: x -> ", entity.x)
+            anchors.fill: parent
+
+            Bowl {
+                id: bowl
+                anchors.horizontalCenter: parent.horizontalCenter
+            }
+
+            Ball {
+                id: ball
+            }
+/*
+            PhysicsEntity {
+                id: door
+                height: 10
+                width: 62.5       // This is the width of the bottleneck of the bowl
+                anchors.top: bowl.bottom
+                anchors.horizontalCenter: parent.horizontalCenter
+
+                fixtures: Box {
+
+                    //anchors.fill: parent
+                    sensor: isDoorOpen
+                    Edge {
+                        vertices: [
+                            Qt.point(0, 0),
+                            Qt.point(width, 0)
+                        ]
                     }
                 }
 
-                Rectangle {
-                    width: 50
-                    height: 50
-                    color: "red"
+                Canvas {
+                    id: canvas
+                    visible: !isDoorOpen    // When the user clicks, hide this
+
+                    anchors.fill: parent
+
+                    onPaint: {
+                        var context = canvas.getContext("2d");
+                        context.beginPath();
+                        context.lineWidth = 5;
+
+                        context.moveTo(0, 0);
+                        context.lineTo(width, 0);
+
+                        context.strokeStyle = "black";
+                        context.stroke();
+                    }
+                }
+            }
+
+            MouseArea {
+                    anchors.fill: parent
+                    onPressed: isDoorOpen = true;
+                    onReleased: isDoorOpen = false;
+                }
+*/
+            Component.onCompleted: {
+                for (var i = 0; i < 10; i++) {
+                    for (var j = 0; j < 10; j++) {
+                        var newBox = ball.createObject(gameScene);
+                        newBox.x = gameScene.width / 2 - 100 + 15*j;
+                        newBox.y = (15*i) - 10;
+                    }
                 }
             }
         }

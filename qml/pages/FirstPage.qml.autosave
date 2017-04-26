@@ -131,9 +131,11 @@ Page {
                                     Qt.point(10, 0),
                                     Qt.point(parent.x, parent.y));
                     if ((mouseX < game.height / 2) && (mouseY > 500))
-                        plane.angularVelocity += 10;
+                        plane.angularVelocity += 20;
                     if ((mouseX > game.height / 2) && (mouseY > 500))
-                        plane.angularVelocity -= 10;
+                        plane.angularVelocity -= 20;
+                    var qp QPointF;
+                    qp = plane.getLocalCenter();
                 }
             }
         }

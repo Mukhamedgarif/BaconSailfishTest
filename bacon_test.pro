@@ -44,4 +44,8 @@ TRANSLATIONS += translations/bacon_test-de.ts
 DISTFILES += \
     qml/pages/components/Ball.qml \
     qml/pages/components/PBody_test.qml \
-    qml/pages/components/Bowl.qml
+    qml/pages/components/Bowl.qml \
+    ../../Desktop/wp120dbcda_06.png \
+    qml/pages/wp120dbcda_06.png \
+    qml/pages/clouds-png-5.png \
+    qml/pages/right.png

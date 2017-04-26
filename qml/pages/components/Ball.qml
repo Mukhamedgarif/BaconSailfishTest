@@ -5,12 +5,29 @@ Component {
 
     PhysicsEntity {
 
+
         id: ballEntity
-        height: 13
-        width: 13
+
+        //height: 300
+        //width: 600
+
+        Sprite {
+            animation: "idle"
+
+            animations: SpriteAnimation {
+                name: "idle"
+                source: "right.png"
+                frames: 1
+                duration: 400
+                loops: Animation.Infinite
+            }
+        }
 
         bodyType: Body.Dynamic
         sleepingAllowed: false
+        bullet: true
+        gravityScale: 0.2
+        //linearVelocity: Item.linearVelocity.setX(1.0)
 
 
         fixtures: Circle {
@@ -22,9 +39,9 @@ Component {
 
         Rectangle {
             // This is the drawn ball
-            radius: parent.width / 2
+            //radius: parent.width / 2
 
-            color: Qt.rgba(0.86, 0.28, 0.07, 1)  // #DD4814
+            //color: Qt.rgba(0.86, 0.28, 0.07, 1)  // #DD4814
 
             height: parent.height
             width: parent.width

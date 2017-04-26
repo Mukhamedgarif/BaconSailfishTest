@@ -118,6 +118,38 @@ Page {
                 }
             }
 
+            property int upAngle: 45
+            property int downAngle: 45
+            property int rightAngle: 45
+            property int leftAngle: 45
+            property int maxAngle: 170
+            RotationSensor {
+                id: rotationSensor
+                active: true
+                onReadingChanged: {
+                    if(rotationSensor.reading.x >upAngle){
+
+                        plane.applyLinearImpulse(
+                                    Qt.point(10, 0),
+                                    Qt.point(parent.x, parent.y));
+                    }
+                    if(rotationSensor.reading.y > leftAngle &&
+                            rotationSensor.reading.y < maxAngle){
+                        plane.applyLinearImpulse(
+                                    Qt.point(-10, 0),
+                                    Qt.point(parent.x, parent.y));
+
+                    }
+                    if(rotationSensor.reading.y > -maxAngle
+                            && rotationSensor.reading.y < -rightAngle){
+                           plane.angularVelocity += 10;
+                    }
+                    if(rotationSensor.reading.x < -downAngle){
+                        plane.angularVelocity -= 10;
+                    }
+                }
+            }
+
             MouseArea {
                 anchors.fill: parent
                 z: -1

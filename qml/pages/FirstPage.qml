@@ -31,6 +31,7 @@
 import QtQuick 2.0
 import Sailfish.Silica 1.0
 import Bacon2D 1.0
+import QtSensors 5.0
 import "components"
 
 Page {
@@ -179,6 +180,55 @@ Page {
                 //lowerAngle: 60
                 //upperAngle: -60
             }
+
+
+            RotationSensor {
+                            id: rotationSensor
+                            active: true
+                            property int upAngle: 10
+                            property int downAngle: 10
+                            property int rightAngle: 10
+                            property int leftAngle: 10
+                            property int maxAngle: 170
+                            property int velocityDelta: 2
+                            property int motorSpeedDelta: 300
+                            property int minVelocity:10
+                            onReadingChanged: {
+                                if(rotationSensor.reading.x >upAngle){
+
+                                    if(plane.velocity-velocityDelta>minVelocity){
+                                       plane.velocity -= velocityDelta
+                                        plane_base.velocity -= 5
+                                    }
+
+
+                                }
+                                if(rotationSensor.reading.y > leftAngle &&
+                                        rotationSensor.reading.y < maxAngle){
+
+
+                                   joint.motorSpeed = -motorSpeedDelta
+                                   joint.enableMotor = true;
+
+                                }
+                                if(rotationSensor.reading.y > -maxAngle
+                                        && rotationSensor.reading.y < -rightAngle){
+
+
+                                    joint.motorSpeed = motorSpeedDelta
+                                    joint.enableMotor = true;
+
+                                }
+                                if(rotationSensor.reading.x < -downAngle){
+
+                                    plane.velocity += velocityDelta;
+                                    plane_base.velocity += velocityDelta;
+
+
+                                }
+                            }
+                        }
+
 
             MouseArea {
                 anchors.fill: parent

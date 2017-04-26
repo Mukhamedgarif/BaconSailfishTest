@@ -39,8 +39,8 @@ Page {
         id: game
         anchors.fill: parent
 
-        height: parent.height
-        width: parent.width
+        height: 720
+        width: 1280
 
         gameName: "test"
 
@@ -48,8 +48,8 @@ Page {
 
         Scene {
             id: gameScene
-            //height: parent.height
-            //width: parent.width
+            height: 720
+            width: 1280
             physics: true
             anchors.fill: parent
             focus: true
@@ -73,15 +73,50 @@ Page {
             }
 
             PhysicsEntity {
+                property int velocity: 0
+                id: plane_base
+
+                x: 100
+                y: 100
+                width: 1
+                height: 1
+                Rectangle {
+                    width: 10
+                    height: 10
+                    color: "#DEDEDE"
+                }
+                bodyType: Body.Kinematic
+                sleepingAllowed: false
+                gravityScale: 0
+                fixtures: Box {
+                    id: baseFixture
+                    //width: plane_base.width
+                    //height: plane_base.height
+                    density: 0.5
+                }
+
+            }
+
+            PhysicsEntity {
+                property int velocity: 0
                 id: plane
-                width: parent.width / 10
-                height: parent.width / 20
+                width: 216
+                height: 108
+                x: 100
+                y: 100
                 //x: parent.scene.width / 2 - spriteItem.width / 2
                 //y: parent.scene.height / 2 - spriteItem.height / 2
 
                 bodyType: Body.Dynamic
                 sleepingAllowed: false
                 gravityScale: 0
+
+                fixtures: Box {
+                    id: planeFixture
+                    width: plane.width
+                    height: plane.height
+                    density: 0.5
+                }
 
                 Sprite {
                     anchors.fill: parent
@@ -98,43 +133,81 @@ Page {
                 MouseArea {
                     anchors.fill: parent
                     onClicked: {
-                        parent.destroy();
+                        //parent.destroy();
                     }
                 }
 
                 behavior: ScriptBehavior {
                     script: {
-                        if (target.x > parent.parent.height)
-                            target.x = 0;
-                        if (target.x < 0)
-                            target.x = parent.parent.height;
-                        target.gravityScale = parent.x/parent.parent.width;
+                        var angle = joint.getJointAngle();
+                        plane.linearVelocity.y =  plane.velocity * Math.sin(angle * Math.PI / 180);
+                        plane.linearVelocity.x = plane.velocity * Math.cos(angle * Math.PI / 180);
+                        plane_base.linearVelocity = plane.linearVelocity;
 
-                        if (target.y > game.height / 2)
-                            target.gravityScale = 0;
-                        if (target.y < 0)
-                            target.destroy();
+                        if (plane.x > 1280) {
+                            plane.x = 0;
+                            plane_base.x = 0;
+                        }
+                        if (plane.x < 0) {
+                            plane.x = 1280;
+                            plane_base.x = 1280;
+                        }
+
+                        if (plane.y < - plane.width * Math.sin(angle * Math.PI / 180)) {
+                            plane.linearVelocity.y = 10;
+                            plane_base.linearVelocity.y = 10;
+                        }
+                        if (plane.y > game.height - plane.width * Math.sin(angle * Math.PI / 180)) {
+                            plane.destroy();
+                            plane_base.destroy();
+                        }
+
+                        console.log(plane.width * Math.sin(angle * Math.PI / 180));
                     }
                 }
+            }
+
+            RevoluteJoint {
+                id: joint
+                bodyA: plane_base.body
+                bodyB: plane.body
+                collideConnected: false
+                motorSpeed: 0
+                enableMotor: false
+                maxMotorTorque: 10000
+                //enableLimit: false
+                //lowerAngle: 60
+                //upperAngle: -60
             }
 
             MouseArea {
                 anchors.fill: parent
                 z: -1
-                onClicked: {
-                    if ((mouseX < game.height / 2) && (mouseY < 200))
-                        plane.applyLinearImpulse(
-                                    Qt.point(-10, 0),
-                                    Qt.point(parent.x, parent.y));
-                    if ((mouseX > game.height / 2) && (mouseY < 200))
-                        plane.applyLinearImpulse(
-                                    Qt.point(10, 0),
-                                    Qt.point(parent.x, parent.y));
-                    if ((mouseX < game.height / 2) && (mouseY > 500))
-                        plane.angularVelocity += 10;
-                    if ((mouseX > game.height / 2) && (mouseY > 500))
-                        plane.angularVelocity -= 10;
+                onPressed: {
+                    if ((mouseX < game.height / 2) && (mouseY < 200) && (plane.linearVelocity.x > 0)) {
+                        plane.velocity -= 20;
+                        plane_base.velocity -= 20;
+                    }
+                    if ((mouseX > game.height / 2) && (mouseY < 200)) {
+                        plane.velocity += 20;
+                        plane_base.velocity += 20;
+                    }
+                    if ((mouseX < game.height / 2) && (mouseY > 500)) {
+                        joint.motorSpeed = 500;
+                        joint.enableMotor = true;
+                    }
+
+                    if ((mouseX > game.height / 2) && (mouseY > 500)) {
+                        joint.motorSpeed = -500;
+                        joint.enableMotor = true;
+                    }
                 }
+
+                onReleased: {
+                    //plane.applyLinearImpulse(Qt.point(-(plane.linearVelocity.x), -(plane.linearVelocity.y)), Qt.point(plane.x, plane.y));
+                    joint.motorSpeed = 0;
+                }
+
             }
         }
     }

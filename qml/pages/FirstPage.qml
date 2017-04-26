@@ -119,14 +119,15 @@ Page {
                 }
             }
 
-            property int upAngle: 45
-            property int downAngle: 45
-            property int rightAngle: 45
-            property int leftAngle: 45
-            property int maxAngle: 170
+
             RotationSensor {
                 id: rotationSensor
                 active: true
+                property int upAngle: 45
+                property int downAngle: 45
+                property int rightAngle: 45
+                property int leftAngle: 45
+                property int maxAngle: 170
                 onReadingChanged: {
                     if(rotationSensor.reading.x >upAngle){
 
